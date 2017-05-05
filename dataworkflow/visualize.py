@@ -66,7 +66,6 @@ def freq3(iSeries, cSeries1, cSeries2):
     1: 3-way freq table w/ counts
     2: 3-way freq table w/ values as a percentage of row totals
     '''
-
     table = pd.crosstab(index=iSeries,
                columns=[cSeries1,
                        cSeries2],
