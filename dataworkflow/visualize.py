@@ -81,19 +81,20 @@ def freq2_store(iSeries, cSeries):
         pos_0: 2-way freq table w/ counts
         pos_1: 2-way freq table w/ values as a percentage of row totals
         pos_2: 2-way freq table w/ values as a percentage of col totals
-        pos_3: Stacked bar graph of counts from first table
+        pos_3: Table prepped for graph with counts from first table,
+               must add .plot(kind='bar',stacked=True) for graph
     '''
     table = pd.crosstab(index=iSeries,
                        columns=cSeries,
                        margins=True)
 
-    table.index = list(iSeries.cat.categories) + ['ColTotals']
+    table.index = list(iSeries.cat.categories) + ['Totals']
     table.columns = list(cSeries.cat.categories) + ['RowTotals']
     iLen = len(table.index)
 
 
-    return [table, table.div(table['RowTotals'], axis=0), table/table.ix['ColTotals'],
-            table.ix[list(range(iLen-1)),table.columns[:-1]].plot(kind='bar',stacked=True)]
+    return [table, table.div(table['RowTotals'], axis=0), table/table.ix['Totals'],
+            table.ix[list(range(iLen-1)),table.columns[:-1]]]
 
 
 def freq3_display(iSeries, cSeries1, cSeries2):
@@ -137,3 +138,23 @@ def freq3_store(iSeries, cSeries1, cSeries2):
                margins=True)
 
     return [table, table/table.ix['All']]
+
+def freq4_display(iSeries, cSeries1, cSeries2, cSeries3):
+    data = pd.crosstab(index=iSeries,
+                   columns=[cSeries1,
+                           cSeries2,
+                           cSeries3],
+                   margins=True)
+
+    print('\n----------Counts---------\n\n', data)
+    print('\n---------------Col%----------\n', data/data.ix['All'])
+
+
+def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
+    data = pd.crosstab(index=iSeries,
+                   columns=[cSeries1,
+                           cSeries2,
+                           cSeries3],
+                   margins=True)
+
+    return [data,data/data.ix['All']]
