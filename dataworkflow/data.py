@@ -46,10 +46,10 @@ def get_data(filename='train.csv', url=URL, force_download=False):
     fam_status = pd.cut(data['FamilyTot'], bins, labels=labels)
     data['FamStatus'] = fam_status
 
-    bins = [0,17,1000, np.inf] #age_group
+    bins = [0,17, 1000, np.inf] #age_group
     labels = ['Child', 'Adult', 'Unknown']
     age_groups = pd.cut(data['Age'], bins, labels=labels)
-    data['age_group'] = age_groups
+    data['age_group'] = age_groups.fillna('Unknown')
 
     #remove uneccesary variables
     data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
