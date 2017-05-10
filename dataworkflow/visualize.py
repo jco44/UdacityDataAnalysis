@@ -14,7 +14,7 @@ def freq1_display(series):
 
     print('\n-------------Counts------\n', table)
     print('\n--------%Total-----------\n',
-         table/table.sum())
+         table/table.ix[:-1].sum())
 
 def freq1_store(series):
     '''Creates freq tables for analyzing a categorical feature
@@ -30,7 +30,7 @@ def freq1_store(series):
                        columns='Count',
                        margins=True)
 
-    return[table, table/table.sum()]
+    return[table, table/table.ix[:-1].sum()]
 
 def freq2_display(iSeries, cSeries):
     '''Displays freq tables and visualization for analyzing 2 categorical features
