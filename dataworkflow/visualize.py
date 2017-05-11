@@ -99,15 +99,17 @@ def freq2_store(iSeries, cSeries):
 
 def freq3_display(iSeries, cSeries1, cSeries2):
     '''Displays freq tables for analyzing 3 categorical features
+
     param
     ------------
     iSeries: pandas series for us as row(index) & labels, dtype==Category
     cSeries1: pandas series for first set of columns & labels, dtype==Category
     cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
+
     returns
     ------------
     1: 3-way freq table w/ counts
-    2: 3-way freq table w/ values as a percentage of row totals
+    2: 3-way freq table w/ values as a percentage of col totals
     '''
     table = pd.crosstab(index=iSeries,
                columns=[cSeries1,
@@ -123,14 +125,14 @@ def freq3_store(iSeries, cSeries1, cSeries2):
     param
     ------------
     iSeries: pandas series for us as row(index) & labels, dtype==Category
-    cSeries1: pandas series for first set of columns & labels, dtype==Category
+    cSeries1: pandas series for 1st set of columns & labels, dtype==Category
     cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
 
     returns
     ------------
     List of 2 pandas DataFrames:
         pos_1 = 3-way freq table w/ counts
-        pos_2 = 3-way freq table w/ values as a percentage of row totals
+        pos_2 = 3-way freq table w/ values as a percentage of col totals
     '''
     table = pd.crosstab(index=iSeries,
                columns=[cSeries1,
@@ -140,6 +142,21 @@ def freq3_store(iSeries, cSeries1, cSeries2):
     return [table, table/table.ix['All']]
 
 def freq4_display(iSeries, cSeries1, cSeries2, cSeries3):
+    '''Creates freq tables for analyzing 4 categorical features
+
+       params
+       ------------
+       iSeries: pandas series for us as row(index) & labels, dtype==Category
+       cSeries1: pandas series for 1st set of columns & labels, dtype==Category
+       cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
+       cSeries2: pandas series for 3rd set of columns & labels, dtype==Category
+
+       returns
+       ------------
+       1. 4-way freq table w/ counts
+       2. 4-way freq table w/ values as a percentage of col totals
+
+    '''
     data = pd.crosstab(index=iSeries,
                    columns=[cSeries1,
                            cSeries2,
@@ -151,6 +168,22 @@ def freq4_display(iSeries, cSeries1, cSeries2, cSeries3):
 
 
 def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
+    '''Stores freq tables for analyzing 4 categorical features
+
+       params
+       ------------
+       iSeries: pandas series for us as row(index) & labels, dtype==Category
+       cSeries1: pandas series for 1st set of columns & labels, dtype==Category
+       cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
+       cSeries2: pandas series for 3rd set of columns & labels, dtype==Category
+
+       returns
+       ------------
+       List of 2 pandas DataFrames:
+           pos_1 = 4-way freq table w/ counts
+           pos_2 = 4-way freq table w/ values as a percentage of col totals
+
+    '''
     data = pd.crosstab(index=iSeries,
                    columns=[cSeries1,
                            cSeries2,
@@ -158,3 +191,23 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
                    margins=True)
 
     return [data,data/data.ix['All']]
+
+
+def ez_graph1(pclass):
+    '''Display stacked bar graph of Male, Female, Total survival rates for specified class'''
+    from matplotlib.pyplot import ylabel
+    from dataworkflow.data import get_data
+    #get data
+    titanic = get_data()
+    #create graph data
+    data = freq3_store(titanic['Sex'],titanic['Pclass'], titanic['Survived'])[0][pclass]
+    data['Totals'] = data.sum(axis=1)
+    graph_data = data.div(data['Totals'], axis=0)
+    #create graph & labels
+    graph = (graph_data[['Died','Lived']]
+            .plot(kind='bar', stacked=True, title='{} Class Survival Rates'.format(pclass))
+            .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+            )
+    ylabel("% of Total")
+
+    return graph
