@@ -194,9 +194,12 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
     return [data,data/data.ix['All']]
 
 def ez_bar(var, title, y_label):
+    '''Creates stacked bar graph with labels and formatted legend'''
+
     graph = (var.plot(kind='bar', stacked=True, title=title)
                 .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     )
+    #set y-axis label
     ylabel(y_label)
 
     return graph
@@ -205,11 +208,10 @@ def ez_bar(var, title, y_label):
 def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
     '''Display stacked bar graph of Male, Female, Total survival rates for
     specified class'''
-
     #create graph data
     data = freq3_store(iSeries, cSeries1, cSeries2)[0][pclass]
     data['Totals'] = data.sum(axis=1)
-    graph_data = data.div(data['Totals'], axis=0)
+    graph_data = data.div(data['Totals'], axis=0)*100
     #create graph & labels
     graph = (graph_data[['Died','Lived']]
             .plot(kind='bar', stacked=True,
@@ -222,6 +224,8 @@ def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
 
 
 def ez_graph2(iSeries, cSeries1, cSeries2, feature_val, title):
+    '''Display stacked bar graph of the class distro across the living, dead, and
+    overall populations for the specified feature_val'''
     #get class data for dead passengers=feature_val
     data = (freq3_store(iSeries, cSeries1, cSeries2)[1]
             [feature_val].ix[['1st', '2nd', '3rd']])
@@ -242,6 +246,8 @@ def ez_graph2(iSeries, cSeries1, cSeries2, feature_val, title):
 
 
 def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
+    '''Displays stacked bar graph of survival/death rates across each class and
+    the overall population for specified feature_val'''
     #get counts table
     data = freq3_store(iSeries,
                        cSeries1, cSeries2)[0][feature_val]
