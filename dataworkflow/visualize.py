@@ -229,3 +229,30 @@ def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
         ylabel('% of Total')
 
         return bar_data, graph
+
+    def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
+        #get counts table
+        data = freq3_store(iSeries,
+                           cSeries1, cSeries2)[0][feature_val]
+        #remove unwanted label
+        data.index.name = None
+        #Add Totals
+        data['Pop. Total'] = data.sum(axis=1)
+
+        #New table as % of total
+        data1 = data/data.ix['All']
+
+        #create graph data
+        data2 = data1.ix[['Died', 'Lived']].transpose()*100
+
+        #graph & label
+        graph = (data2
+                 .plot(kind='bar',
+                       stacked=True,
+                       title=title) #'{} Survival & Death Rates'.format(feature_val))
+                 .legend(bbox_to_anchor=(1.05,1),
+                         loc=2,
+                         borderaxespad=0.))
+        ylabel('% of Total')
+
+        return graph
