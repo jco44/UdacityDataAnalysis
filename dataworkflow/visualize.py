@@ -211,48 +211,49 @@ def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
     return graph
 
 
-    def ez_graph2(iSeries, cSeries1, cSeries2, feature_val, title):
-        #get class data for dead passengers=feature_val
-        data = (freq3_store(iSeries, cSeries1, cSeries2)[1]
-                [feature_val].ix[['1st', '2nd', '3rd']])
-        #get class data for pop of passengers=feature_val
-        totals = (freq2_store(iSeries, cSeries1)[2]
-                  [feature_val].ix[['1st', '2nd', '3rd']])
+def ez_graph2(iSeries, cSeries1, cSeries2, feature_val, title):
+    #get class data for dead passengers=feature_val
+    data = (freq3_store(iSeries, cSeries1, cSeries2)[1]
+            [feature_val].ix[['1st', '2nd', '3rd']])
+    #get class data for pop of passengers=feature_val
+    totals = (freq2_store(iSeries, cSeries1)[2]
+              [feature_val].ix[['1st', '2nd', '3rd']])
 
-        #prep graph data
-        bar_data = pd.concat((data,totals), axis=1).transpose()*100
-        bar_data.index = ['Died', 'Lived', 'Pop. Total']
+    #prep graph data
+    bar_data = pd.concat((data,totals), axis=1).transpose()*100
+    bar_data.index = ['Died', 'Lived', 'Pop. Total']
 
-        #graph & label
-        graph = (bar_data.plot(kind='bar', stacked=True, title=title)
-         .legend(bbox_to_anchor=(1.05,1), loc=2, borderaxespad=0.))
-        ylabel('% of Total')
+    #graph & label
+    graph = (bar_data.plot(kind='bar', stacked=True, title=title)
+     .legend(bbox_to_anchor=(1.05,1), loc=2, borderaxespad=0.))
+    ylabel('% of Total')
 
-        return bar_data, graph
+    return bar_data, graph
 
-    def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
-        #get counts table
-        data = freq3_store(iSeries,
-                           cSeries1, cSeries2)[0][feature_val]
-        #remove unwanted label
-        data.index.name = None
-        #Add Totals
-        data['Pop. Total'] = data.sum(axis=1)
 
-        #New table as % of total
-        data1 = data/data.ix['All']
+def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
+    #get counts table
+    data = freq3_store(iSeries,
+                       cSeries1, cSeries2)[0][feature_val]
+    #remove unwanted label
+    data.index.name = None
+    #Add Totals
+    data['Pop. Total'] = data.sum(axis=1)
 
-        #create graph data
-        data2 = data1.ix[['Died', 'Lived']].transpose()*100
+    #New table as % of total
+    data1 = data/data.ix['All']
 
-        #graph & label
-        graph = (data2
-                 .plot(kind='bar',
-                       stacked=True,
-                       title=title) #'{} Survival & Death Rates'.format(feature_val))
-                 .legend(bbox_to_anchor=(1.05,1),
-                         loc=2,
-                         borderaxespad=0.))
-        ylabel('% of Total')
+    #create graph data
+    data2 = data1.ix[['Died', 'Lived']].transpose()*100
 
-        return graph
+    #graph & label
+    graph = (data2
+             .plot(kind='bar',
+                   stacked=True,
+                   title=title) #'{} Survival & Death Rates'.format(feature_val))
+             .legend(bbox_to_anchor=(1.05,1),
+                     loc=2,
+                     borderaxespad=0.))
+    ylabel('% of Total')
+
+    return graph    
