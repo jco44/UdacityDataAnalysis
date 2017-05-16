@@ -193,9 +193,18 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
 
     return [data,data/data.ix['All']]
 
+def ez_bar(var, title, y_label):
+    graph = (var.plot(kind='bar', stacked=True, title=title)
+                .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    )
+    ylabel(y_label)
+
+    return graph
+
 
 def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
-    '''Display stacked bar graph of Male, Female, Total survival rates for specified class'''
+    '''Display stacked bar graph of Male, Female, Total survival rates for
+    specified class'''
 
     #create graph data
     data = freq3_store(iSeries, cSeries1, cSeries2)[0][pclass]
@@ -203,7 +212,8 @@ def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
     graph_data = data.div(data['Totals'], axis=0)
     #create graph & labels
     graph = (graph_data[['Died','Lived']]
-            .plot(kind='bar', stacked=True, title='{} Class Survival Rates'.format(pclass))
+            .plot(kind='bar', stacked=True,
+                  title='{} Class Survival Rates'.format(pclass))
             .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
             )
     ylabel("% of Total")
@@ -250,10 +260,10 @@ def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
     graph = (data2
              .plot(kind='bar',
                    stacked=True,
-                   title=title) #'{} Survival & Death Rates'.format(feature_val))
+                   title=title)
              .legend(bbox_to_anchor=(1.05,1),
                      loc=2,
                      borderaxespad=0.))
     ylabel('% of Total')
 
-    return graph    
+    return graph
