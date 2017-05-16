@@ -1,4 +1,5 @@
 import pandas as pd
+from matplotlib.pyplot import ylabel
 
 def freq1_display(series):
     '''Displays freq tables for analyzing a categorical feature
@@ -193,14 +194,11 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
     return [data,data/data.ix['All']]
 
 
-def ez_graph1(pclass):
+def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
     '''Display stacked bar graph of Male, Female, Total survival rates for specified class'''
-    from matplotlib.pyplot import ylabel
-    from dataworkflow.data import get_data
-    #get data
-    titanic = get_data()
+
     #create graph data
-    data = freq3_store(titanic['Sex'],titanic['Pclass'], titanic['Survived'])[0][pclass]
+    data = freq3_store(iSeries, cSeries1, cSeries2)[0][pclass]
     data['Totals'] = data.sum(axis=1)
     graph_data = data.div(data['Totals'], axis=0)
     #create graph & labels
