@@ -117,6 +117,7 @@ def freq3_display(iSeries, cSeries1, cSeries2):
                        cSeries2],
                margins=True)
 
+
     print('\n------------Counts----------\n', table)
     print('\n-----------Col%--------------\n', table/table.ix['All'])
 
@@ -150,7 +151,7 @@ def freq4_display(iSeries, cSeries1, cSeries2, cSeries3):
        iSeries: pandas series for us as row(index) & labels, dtype==Category
        cSeries1: pandas series for 1st set of columns & labels, dtype==Category
        cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
-       cSeries2: pandas series for 3rd set of columns & labels, dtype==Category
+       cSeries3: pandas series for 3rd set of columns & labels, dtype==Category
 
        returns
        ------------
@@ -176,7 +177,7 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
        iSeries: pandas series for us as row(index) & labels, dtype==Category
        cSeries1: pandas series for 1st set of columns & labels, dtype==Category
        cSeries2: pandas series for 2nd set of columns & labels, dtype==Category
-       cSeries2: pandas series for 3rd set of columns & labels, dtype==Category
+       cSeries3: pandas series for 3rd set of columns & labels, dtype==Category
 
        returns
        ------------
@@ -193,10 +194,10 @@ def freq4_store(iSeries, cSeries1, cSeries2, cSeries3):
 
     return [data,data/data.ix['All']]
 
-def ez_bar(var, title, y_label):
+def ez_bar(var, title, y_label, stacked=True):
     '''Creates stacked bar graph with labels and formatted legend'''
 
-    graph = (var.plot(kind='bar', stacked=True, title=title)
+    graph = (var.plot(kind='bar', stacked=stacked, title=title)
                 .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     )
     #set y-axis label
@@ -205,17 +206,19 @@ def ez_bar(var, title, y_label):
     return graph
 
 
-def ez_graph1(iSeries, cSeries1, cSeries2, pclass):
+def ez_graph1(iSeries, cSeries1, cSeries2, pclass, iVals=None):
     '''Display stacked bar graph of Male, Female, Total survival rates for
     specified class'''
     #create graph data
     data = freq3_store(iSeries, cSeries1, cSeries2)[0][pclass]
     data['Totals'] = data.sum(axis=1)
     graph_data = data.div(data['Totals'], axis=0)*100
+
     #create graph & labels
+    graph_data.index = iVals
     graph = (graph_data[['Died','Lived']]
             .plot(kind='bar', stacked=True,
-                  title='{} Class Survival Rates'.format(pclass))
+                  title='{} Class Death & Survival Rates'.format(pclass))
             .legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
             )
     ylabel("% of Total")
@@ -235,14 +238,14 @@ def ez_graph2(iSeries, cSeries1, cSeries2, feature_val, title):
 
     #prep graph data
     bar_data = pd.concat((data,totals), axis=1).transpose()*100
-    bar_data.index = ['Died', 'Lived', 'Pop. Total']
+    bar_data.index = ['Died', 'Lived', 'Population']
 
     #graph & label
     graph = (bar_data.plot(kind='bar', stacked=True, title=title)
      .legend(bbox_to_anchor=(1.05,1), loc=2, borderaxespad=0.))
     ylabel('% of Total')
 
-    return bar_data, graph
+    return bar_data.transpose()/100, graph
 
 
 def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
@@ -254,7 +257,7 @@ def ez_graph3(iSeries, cSeries1, cSeries2, feature_val, title):
     #remove unwanted label
     data.index.name = None
     #Add Totals
-    data['Pop. Total'] = data.sum(axis=1)
+    data['Population'] = data.sum(axis=1)
 
     #New table as % of total
     data1 = data/data.ix['All']
